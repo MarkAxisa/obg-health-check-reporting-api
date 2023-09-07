@@ -17,20 +17,47 @@ const errorSchema = new mongoose.Schema({
   errorMessage: String
 });
 
+const errorTypesSchema = new mongoose.Schema({
+  errorTypes: [ 
+    String
+  ]
+});
+
 const Error = mongoose.model('Error', errorSchema);
+const ErrorType = mongoose.model('ErrorType', errorTypesSchema);
+
 
 app.get('/errors', async (req, res) => {
   const errors = await Error.find();
   res.send(errors);
 });
 
+app.get('/errorTypes', async (req, res) => {
+  const errorTypes = (await ErrorType.find()).map((type) => type.errorType);
+  res.send(errorTypes);
+});
+
 app.post('/errors', async (req, res) => {
     const error = new Error({
       reason: req.body.reason,
-      errorMessage: req.body.errorMessage
+      errorMessage: req.body.errorMessage,
+      dateAdded: new ISODate()
     });
     await error.save();
     res.send(error);
+});
+
+app.post('/errorTypes', async (req, res) => {
+  const updateOperation = {
+    $set: {
+      errorTypes: req.body.errorTypes
+    },
+  };
+
+  updated = await ErrorType.findOneAndUpdate({}, updateOperation, { returnOriginal: false })
+
+  await updated.save();
+  res.send(updated);
 });
 
 app.delete('/errors/:id', async (req, res) => {
