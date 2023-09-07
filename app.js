@@ -14,7 +14,8 @@ mongoose.connect('mongodb+srv://admin:Qwe12345@obgquickregister.m5a9bqx.mongodb.
 
 const errorSchema = new mongoose.Schema({
   reason: String,
-  errorMessage: String
+  errorMessage: String,
+  dateAdded: Date
 });
 
 const errorTypesSchema = new mongoose.Schema({
@@ -41,7 +42,7 @@ app.post('/errors', async (req, res) => {
     const error = new Error({
       reason: req.body.reason,
       errorMessage: req.body.errorMessage,
-      dateAdded: new ISODate()
+      dateAdded: req.body.dateAdded
     });
     await error.save();
     res.send(error);
