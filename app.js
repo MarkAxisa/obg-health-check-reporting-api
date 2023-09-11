@@ -20,7 +20,10 @@ const errorSchema = new mongoose.Schema({
 
 const errorTypesSchema = new mongoose.Schema({
   errorTypes: [ 
-    String
+    {
+      errorType: String,
+      count: Number
+    }
   ]
 });
 
@@ -51,7 +54,7 @@ app.post('/errors', async (req, res) => {
 app.post('/errorTypes', async (req, res) => {
   const updateOperation = {
     $set: {
-      errorTypes: req.body.errorTypes
+      errorTypes: req.body.errors
     },
   };
 
